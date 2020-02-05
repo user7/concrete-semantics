@@ -20,6 +20,12 @@ fun assigned :: "com \<Rightarrow> vname set" where
 "assigned (If b c1 c2) = (assigned c1 \<union> assigned c2)" |
 "assigned (While b c) = assigned c"
 
+lemma "\<lbrakk>(c, s) \<Rightarrow> t; x \<notin> assigned c\<rbrakk> \<Longrightarrow> s x = t x"
+  apply(induction rule: big_step_induct)
+  apply(auto)
+  done
+
+(* 7.2 *)
 
 
 end
