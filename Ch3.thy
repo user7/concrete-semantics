@@ -3,14 +3,32 @@ theory Ch3
 begin
 
 type_synonym vname = string
-datatype aexp = N int | V vname | Plus aexp aexp
 type_synonym val = int
 type_synonym state = "vname \<Rightarrow> val"
+datatype aexp = N val | V vname | Plus aexp aexp
 
 fun aval :: "aexp \<Rightarrow> state \<Rightarrow> val" where
 "aval (N n) s = n" |
-"aval (V x ) s = s x" |
+"aval (V x) s = s x" |
 "aval (Plus a1 a2) s = aval a1 s + aval a2 s"
+
+fun asimp_const :: "aexp \<Rightarrow> aexp" where
+"asimp_const (Plus a1 a2) = (case (asimp_const a1, asimp_const a2) of
+  (N n1, N n2) \<Rightarrow> N (n1 + n2) |
+  (a1s, a2s) \<Rightarrow> Plus a1s a2s
+)" |
+"asimp_const a = a"
+
+(* Exercise 3.1. To show that asimp_const really folds all subexpressions of
+the form Plus (N i ) (N j ), define a function optimal :: aexp \<Rightarrow> bool that
+checks that its argument does not contain a subexpression of the form Plus
+(N i ) (N j ). Then prove optimal (asimp_const a).
+*)
+
+lemma aval_asimp_const: "aval (asimp_const a) s = aval a s"
+apply(induction a)
+apply(auto split: aexp.split)
+done
 
 (* 3.10 *)
 

@@ -215,20 +215,22 @@ fun comp :: "aexp \<Rightarrow> instr list" where
 "comp (V x) = [LOAD x]" |
 "comp (Plus e1 e2) = comp e1 @ comp e2 @ [ADD]"
 
+(*
 inductive ok :: "nat \<Rightarrow> instr list \<Rightarrow> nat \<Rightarrow> bool" where
 ok_0: "ok n [] n" |
 ok_LI: "ok n is n' \<Longrightarrow> ok n (is @ [LOADI k]) (Suc n')" |
 ok_L: "ok n is n' \<Longrightarrow> ok n (is @ [LOAD x]) (Suc n')" |
 ok_A: "ok n is (Suc (Suc n')) \<Longrightarrow> ok n (is @ [ADD]) (Suc n')"
+*)
 
 (* can't use stack instead of instr list? *)
-inductive ok2 :: "nat \<Rightarrow> instr list \<Rightarrow> nat \<Rightarrow> bool" where
-okNil:   "ok2 n Nil n" |
-okLOADI: "ok2 n [LoadI i] (Suc n)" |
-okLOAD:  "ok2 n [Load x] (Suc n)" | 
-okADD:   "ok2 (Suc (Suc n)) [ADD] (Suc n)" |
-okConc:  "ok2 p s1 q \<Longrightarrow> ok2 q s2 r \<Longrightarrow> ok2 p (s1 @ s2) r"
+inductive ok :: "nat \<Rightarrow> instr list \<Rightarrow> nat \<Rightarrow> bool" where
+okNil:   "ok n Nil n" |
+okLOADI: "ok n [LoadI i] (Suc n)" |
+okLOAD:  "ok n [Load x] (Suc n)" | 
+okADD:   "ok (Suc (Suc n)) [ADD] (Suc n)" |
+okConc:  "ok p s1 q \<Longrightarrow> ok q s2 r \<Longrightarrow> ok p (s1 @ s2) r"
 
-lemma "ok2 n ii n' \<Longrightarrow> length stk = n \<Longrightarrow> length (exec ii s stk) = n'"
+lemma "ok n ii n' \<Longrightarrow> length stk = n \<Longrightarrow> length (exec ii s stk) = n'"
 
 end

@@ -28,4 +28,5 @@ lemma "\<lbrakk>(c, s) \<Rightarrow> t; x \<notin> assigned c\<rbrakk> \<Longrig
 (* 7.2 *)
 
 
+
 end
