@@ -29,17 +29,22 @@ qed
 
 (* 5.1 *)
 
-lemma assumes T : "\<forall> x y. T x y \<or> T y x"
-  and A:  "\<forall> x y. A x y \<and> A y x \<longrightarrow> x = y"
-  and TA: "\<forall> x y. T x y \<longrightarrow> A x y"
-  and A2: "A x y"
-  shows "T x y"
-proof -
-  assume "\<not> T x y"
-  from T and this have "T y x" by auto
+lemma
+  assumes TT: "\<forall> x y. T x y \<or> T y x"
+    and A:    "\<forall> x y. A x y \<and> A y x \<longrightarrow> x = y"
+    and TA:   "\<forall> x y. T x y \<longrightarrow> A x y"
+    and A2:   "A x y"
+  shows       "T x y"
+proof (rule ccontr)
+  assume Z: "\<not> T x y"
+  from TT and this have "T y x" by auto
   from TA and this have "A y x" by auto
   from this and A2 have "A x y \<and> A y x" by auto
   from this and A have "x = y" by auto
-  from this and T have "T x y" by auto
-  from this and `\<not> T x y` show "False" by auto
+  from this and TT and Z show "False" by auto
 qed
+
+(* 5.2 *)
+
+lemma "\<exists> ys zs. xs = ys @ zs \<and> (length ys = length zs \<or> length ys = length zs + 1)"
+
